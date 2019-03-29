@@ -10,8 +10,9 @@ import {
   FlatList
 } from 'react-native';
 
+import {StackNAvigator} from 'react-navigation'
+
 import Order from './Order'
-//import console = require('console');
 
 export default class Main extends React.Component {
   constructor(props){
@@ -19,21 +20,23 @@ export default class Main extends React.Component {
     this.state = {
       loading: true,
       dataSource:[],
+      noteArray:[]
     }
   }
 
   componentDidMount(){
     //return fetch('https://c2abae51-a0a9-4b7b-aee5-e08000c52021.mock.pstmn.io')
-    return fetch('https://facebook.github.io/react-native/movies.json')
+    //return fetch('https://facebook.github.io/react-native/movies.json')
+    return fetch('http://demo0257930.mockable.io/pqapp')
     .then((response)=>response.json())
     .then((responseJson)=>{
       this.setState({
         isLoading:false,
-        dataSource:responseJson.movies,
+        dataSource:responseJson.orders,
       })
     })
     .catch((error)=>{
-      alert(error)
+      console.log(error)
     });
   }
 
@@ -86,37 +89,34 @@ export default class Main extends React.Component {
       <TouchableOpacity onPress={this.addNote.bind(this)}style={styles.addButton}>
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
-
-    </View>
-    if(this.state.loading){
-      return(
-        <View style={styles.container}>
-          <Text>Descargando ordenes</Text>
-        </View>
       );
     }*/
   render() {
-    if(this.state.isLoading){
+    if(this.state.isLoading){//Loading page
       return(
         <View style={styles.container}>
           <ActivityIndicator/>
         </View>
       )
     }
-    else{
-      let movies = this.state.dataSource.map((val,key)=>{
-        if(val.id==1){
-          return <View key={key} style={styles.item}>
-                <Text>{val.title}</Text>
-               </View>
+    else{//Ṕage loaded
+      let orders = this.state.dataSource.map((val,key)=>{//Maping the JSON
+        if(val.estatus=="Pendiente"){
+          return <Order key={key} keyval={key} val={val}
+          deleteMethod={()=>this.deleteNote(key)}/>
         }
         else{
           let i=0;
         }
-      });
+      }); 
       return(
         <View style={styles.container}>
-          {movies}
+          <View style={styles.header}>
+            <Text style={styles.headerText}>- Ordenes -</Text>
+          </View>
+          <ScrollView style={styles.scrollContainer}>
+             {orders}
+          </ScrollView>
         </View>
       )
     }
@@ -149,7 +149,8 @@ export default class Main extends React.Component {
         </View>
       );
   }*/
-
+//TODO:
+//Cambiar el método para hacer update en el estatus del pedido en lugar de borrarlo
   deleteNote(key){
     this.state.noteArray.splice(key,1);
     this.setState({noteArray:this.state.noteArray})
@@ -160,9 +161,6 @@ export default class Main extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#fff',
-    alignItems: 'center',
-    justifyContent:'center',
  },
  header: {
    backgroundColor: "#E91E63",
@@ -194,31 +192,5 @@ const styles = StyleSheet.create({
    backgroundColor: "#252525",
    borderTopWidth: 2,
    borderTopColor: "#ededed"
- },
- addButton: {
-   position: "absolute",
-   zIndex: 11,
-   right: 20,
-   bottom: 90,
-   backgroundColor: "#e91e63",
-   width: 90,
-   height: 90,
-   borderRadius: 59,
-   alignItems: "center",
-   justifyContent: "center",
-   elevation: 8
- },
- item:{
-   flex:1,
-   alignSelf:'stretch',
-   margin:10,
-   alignItems:'center',
-   justifyContent:'center',
-   borderBottomWidth:1,
-   borderBottomColor:'#eee'
- },
- addButtonText: {
-   color: "#fff",
-   fontSize: 24
  },
 });
