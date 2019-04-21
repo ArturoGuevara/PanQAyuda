@@ -9,25 +9,24 @@ import {
 } from 'react-native';
 
 
-import TicketModel from '../models/TicketModel'
+import ClientModel from '../models/ClientModel'
 
-export default class Ticket extends React.Component {
+export default class Client extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       loading: true,
       dataSource:[],
-      noteArray:[]
     }
   }
 
   componentDidMount(){
-    return fetch('http://demo0257930.mockable.io/tickets')
+    return fetch('http://demo0257930.mockable.io/clientes')
     .then((response)=>response.json())
     .then((responseJson)=>{
       this.setState({
         isLoading:false,
-        dataSource:responseJson.tickets,
+        dataSource:responseJson.clients,
       })
     })
     .catch((error)=>{
@@ -37,12 +36,11 @@ export default class Ticket extends React.Component {
 
   render() {
     //Retrieving the data from the Order view through the navigator. 
-    const order = this.props.navigation.getParam('order','NO ORDER');
     const client = this.props.navigation.getParam('client','NO CLIENT');
-    let ticket = this.state.dataSource.map((val,key)=>{//Maping the JSON
+    let clients = this.state.dataSource.map((val,key)=>{//Maping the JSON
       //return <TicketModel key={key} keyval={key} val={val}/>});
-      if(val.idCompra==order&&val.idCliente==client){
-        return <TicketModel key={key} keyval={key} val={val} />
+      if(val.idCliente==client){
+        return <ClientModel key={key} keyval={key} val={val} />
       }
       else{
         let i=0;
@@ -51,12 +49,12 @@ export default class Ticket extends React.Component {
     return(
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Detalles de la orden</Text>
+          <Text style={styles.headerText}>Info del cliente</Text>
         </View>
+        <Text>{client}</Text>
         <ScrollView style={styles.scrollContainer}>
-           {ticket}
+           {clients}
         </ScrollView>
-        <Button title="Info Cliente" onPress={()=>this.props.navigation.navigate('Client',{client:client})}></Button>
       </View>
       )
     }

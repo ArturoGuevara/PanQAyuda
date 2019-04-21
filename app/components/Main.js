@@ -40,18 +40,18 @@ export default class Main extends React.Component {
   }
 
   render() {
-    const {navigate} = this.props.navigation;
+    const {navigation} = this.props;
     if(this.state.isLoading){//Loading page
       return(
         <View style={styles.container}>
           <ActivityIndicator/>
         </View>
       )
-    }
+    }    
     else{//Ṕage loaded
       let orders = this.state.dataSource.map((val,key)=>{//Maping the JSON
         if(val.estatus=="Pendiente"){
-          return <Order key={key} keyval={key} val={val}
+          return <Order key={key} keyval={key} val={val} navigation={navigation}
           /*deleteMethod={()=>this.deleteNote(key)}*//>
         }
         else{
@@ -66,7 +66,7 @@ export default class Main extends React.Component {
           <ScrollView style={styles.scrollContainer}>
              {orders}
           </ScrollView>
-          <Button title="Completo" onPress={() => navigate('Complete')}></Button>
+          <Button title="Completo" onPress={() => this.props.navigation.navigate('Complete')}></Button>
         </View>
       )
     }
